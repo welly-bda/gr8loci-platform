@@ -6,3 +6,6 @@ export type { ButtonProps, ButtonVariant, ButtonSize } from './components/Button
 
 export { Card } from './components/Card'
 export type { CardProps, CardVariant } from './components/Card'
+
+export { Heading, Text, Link } from './components/Typography'
+export type { HeadingProps, TextProps, LinkProps } from './components/Typography'
