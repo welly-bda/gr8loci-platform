@@ -9,7 +9,7 @@
     "./tokens.css": "./tokens.css"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm run generate:tokens && tsc",
     "dev": "tsc --watch",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
