@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum PostStatus {
+  draft
+  published
+  archived
+}
+
+model BlogPost {
+  id             String     @id @default(cuid())
+  slug           String     @unique
+  title          String
+  excerpt        String?
+  content        Json
+  contentVersion Int        @default(1)
+  heroImageUrl   String?
+  heroImageAlt   String?
+  status         PostStatus @default(draft)
+  publishedAt    DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([status, publishedAt])
+  @@map("blog_posts")
+}
+
+model Page {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  content        Json
+  contentVersion Int      @default(1)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("pages")
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("admin_users")
+}
