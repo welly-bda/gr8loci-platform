@@ -59,7 +59,6 @@ async function main() {
         content: {
           type: 'doc',
           content: [
-            heading(1, p.title),
             paragraph(p.excerpt ?? ''),
             heading(2, 'Section one'),
             paragraph('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis blandit.'),
