@@ -1,8 +1,10 @@
 module.exports = {
   semi: false,
   singleQuote: true,
+  jsxSingleQuote: false,
   trailingComma: 'all',
   printWidth: 100,
   tabWidth: 2,
   arrowParens: 'always',
+  endOfLine: 'lf',
 }
