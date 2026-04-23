@@ -45,6 +45,7 @@ export type BlockNode =
   | HeadingNode
   | BulletListNode
   | OrderedListNode
+  | ListItemNode
   | BlockquoteNode
   | ImageNode
   | HorizontalRuleNode

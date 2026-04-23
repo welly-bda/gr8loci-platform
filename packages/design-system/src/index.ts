@@ -21,7 +21,7 @@ export type { IconProps, IconSize } from './components/Icon'
 
 export { isRichContent } from './content/schema'
 export type {
-  RichContent,
+  RichContent as RichContentSchema,
   BlockNode,
   InlineNode,
   TextNode,
@@ -35,3 +35,6 @@ export type {
   ImageNode,
   HorizontalRuleNode,
 } from './content/schema'
+
+export { RichContent } from './content/RichContent'
+export type { RichContentProps } from './content/RichContent'
