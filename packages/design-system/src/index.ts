@@ -15,3 +15,6 @@ export type { StackProps, RowProps, ContainerProps } from './components/Layout'
 
 export { Input } from './components/Input'
 export type { InputProps } from './components/Input'
+
+export { Icon } from './components/Icon'
+export type { IconProps, IconSize } from './components/Icon'
