@@ -12,3 +12,6 @@ export type { HeadingProps, TextProps, LinkProps } from './components/Typography
 
 export { Stack, Row, Container } from './components/Layout'
 export type { StackProps, RowProps, ContainerProps } from './components/Layout'
+
+export { Input } from './components/Input'
+export type { InputProps } from './components/Input'
