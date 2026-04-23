@@ -43,6 +43,20 @@ describe('StubAuthProvider', () => {
     expect(await provider.getSession()).toBeNull()
   })
 
+  it('returns null when the token has an empty-string email', async () => {
+    // Sign a token bypassing the helper to simulate a malformed/attacker token
+    const { SignJWT } = await import('jose')
+    const key = new TextEncoder().encode(SECRET)
+    const token = await new SignJWT({ email: '' })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setSubject('u1')
+      .setExpirationTime('7d')
+      .sign(key)
+    cookieStore.set('admin_session', token)
+    const provider = createStubAuthProvider({ secret: SECRET, getCookies: mockCookies })
+    expect(await provider.getSession()).toBeNull()
+  })
+
   it('signIn stores a valid signed token in the cookie', async () => {
     const provider = createStubAuthProvider({ secret: SECRET, getCookies: mockCookies })
     await provider.signIn({ userId: 'u1', email: 'a@b.com' })

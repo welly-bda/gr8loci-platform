@@ -30,8 +30,10 @@ export async function signStubToken(session: Session, secret: string): Promise<s
 
 /**
  * Creates a StubAuthProvider. F1-only — F4+ replaces with Clerk.
- * Do NOT use in production as-is; this has no rate limiting, no MFA,
- * no password reset, and compares passwords via plaintext env-var match.
+ * Do NOT use in production as-is; the consuming app uses a plaintext
+ * env-var password compare for login. This module only handles JWT
+ * issuance and cookie-based session retrieval — no rate limiting, no MFA,
+ * no revocation, no password reset.
  */
 export function createStubAuthProvider({
   secret,
@@ -47,7 +49,7 @@ export function createStubAuthProvider({
       if (!token) return null
       try {
         const { payload } = await jwtVerify(token, key)
-        if (!payload.sub || typeof payload.email !== 'string') return null
+        if (!payload.sub || typeof payload.email !== 'string' || payload.email.length === 0) return null
         return { userId: payload.sub, email: payload.email }
       } catch {
         return null
