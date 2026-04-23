@@ -26,9 +26,9 @@ export type HeadingNode = {
   content?: InlineNode[]
 }
 
-export type BulletListNode = { type: 'bullet_list'; content?: ListItemNode[] }
-export type OrderedListNode = { type: 'ordered_list'; content?: ListItemNode[] }
-export type ListItemNode = { type: 'list_item'; content?: BlockNode[] }
+export type BulletListNode = { type: 'bulletList'; content?: ListItemNode[] }
+export type OrderedListNode = { type: 'orderedList'; content?: ListItemNode[] }
+export type ListItemNode = { type: 'listItem'; content?: BlockNode[] }
 
 export type BlockquoteNode = { type: 'blockquote'; content?: BlockNode[] }
 
@@ -37,7 +37,7 @@ export type ImageNode = {
   attrs: { src: string; alt?: string; title?: string }
 }
 
-export type HorizontalRuleNode = { type: 'horizontal_rule' }
+export type HorizontalRuleNode = { type: 'horizontalRule' }
 
 export type InlineNode = TextNode
 export type BlockNode =
