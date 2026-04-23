@@ -12,7 +12,12 @@ export async function loginAction(_prev: { error?: string }, formData: FormData)
     return { error: 'Email and password are required.' }
   }
 
-  if (password !== process.env.ADMIN_STUB_PASSWORD) {
+  const adminPassword = process.env.ADMIN_STUB_PASSWORD
+  if (!adminPassword) {
+    console.error('[auth] ADMIN_STUB_PASSWORD env var is not set — login disabled')
+    return { error: 'Authentication is not configured.' }
+  }
+  if (password !== adminPassword) {
     return { error: 'Invalid credentials.' }
   }
 
