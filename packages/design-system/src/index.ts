@@ -18,3 +18,20 @@ export type { InputProps } from './components/Input'
 
 export { Icon } from './components/Icon'
 export type { IconProps, IconSize } from './components/Icon'
+
+export { isRichContent } from './content/schema'
+export type {
+  RichContent,
+  BlockNode,
+  InlineNode,
+  TextNode,
+  TextMark,
+  ParagraphNode,
+  HeadingNode,
+  BulletListNode,
+  OrderedListNode,
+  ListItemNode,
+  BlockquoteNode,
+  ImageNode,
+  HorizontalRuleNode,
+} from './content/schema'
