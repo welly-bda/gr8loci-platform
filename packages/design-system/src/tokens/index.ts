@@ -22,6 +22,7 @@ export const tokens = {
       success: '#16a34a',
       warning: '#f59e0b',
       danger: '#dc2626',
+      dangerHover: '#b91c1c',
       info: '#0284c7',
     },
     surface: {

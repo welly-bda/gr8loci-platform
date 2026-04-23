@@ -12,8 +12,9 @@
 }
 
 .button:focus-visible {
-  outline: 2px solid var(--color-brand-accent);
+  outline: 2px solid var(--color-brand-primary);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--color-brand-accent);
 }
 
 .button:disabled {
@@ -64,5 +65,5 @@
   color: var(--color-text-inverse);
 }
 .danger:hover:not(:disabled) {
-  background: #b91c1c;
+  background: var(--color-semantic-dangerHover);
 }
