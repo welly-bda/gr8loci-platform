@@ -3,7 +3,6 @@ const tseslint = require('typescript-eslint')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const prettier = require('eslint-config-prettier')
-const next = require('eslint-config-next')
 
 module.exports = [
   js.configs.recommended,
