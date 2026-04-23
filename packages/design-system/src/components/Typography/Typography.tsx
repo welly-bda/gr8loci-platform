@@ -29,7 +29,7 @@ export const Text = forwardRef<HTMLElement, TextProps>(function Text(
   return <Component ref={ref as never} className={clsx(styles.text, styles[`text-${size}`], className)} {...rest} />
 })
 
-export interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {}
+export type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement>
 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   { className, ...rest },

@@ -27,8 +27,8 @@ interface StackOrRowProps extends HTMLAttributes<HTMLDivElement> {
   justify?: JustifyContent
 }
 
-export interface StackProps extends StackOrRowProps {}
-export interface RowProps extends StackOrRowProps {}
+export type StackProps = StackOrRowProps
+export type RowProps = StackOrRowProps
 
 export const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack(
   { gap = 4, align = 'stretch', justify = 'start', className, style, ...rest },

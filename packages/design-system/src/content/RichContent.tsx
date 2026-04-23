@@ -64,7 +64,6 @@ function renderBlock(node: BlockNode): ReactNode {
         </blockquote>
       )
     case 'image':
-      // eslint-disable-next-line @next/next/no-img-element
       return <img src={node.attrs.src} alt={node.attrs.alt ?? ''} title={node.attrs.title} />
     case 'horizontalRule':
       return <hr />
