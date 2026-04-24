@@ -20,6 +20,6 @@ interface ThemeStyleProps {
 export async function ThemeStyle({ prisma, slug }: ThemeStyleProps) {
   const tokens = await loadTheme(prisma, slug)
   const css = serializeTokens(tokens)
-  // eslint-disable-next-line react/no-danger -- content is Zod-validated, no user input
+  // Safe: css comes from serializeTokens over Zod-validated values, no user input.
   return <style dangerouslySetInnerHTML={{ __html: css }} />
 }
