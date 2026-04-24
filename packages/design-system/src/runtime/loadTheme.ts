@@ -16,12 +16,14 @@ export interface BrandThemePrismaClient {
 /**
  * Load the theme for `slug`, falling back to compile-time defaults on any failure.
  *
- * Failure modes (all logged, never throw):
- *  - row missing          → defaultTokens
- *  - Zod validation fails → defaultTokens
- *  - Prisma query throws  → defaultTokens
+ * Failure modes (never throw):
+ *  - row missing          → defaultTokens (silent; expected during bootstrap)
+ *  - Zod validation fails → defaultTokens (logged to stderr)
+ *  - Prisma query throws  → defaultTokens (logged to stderr)
  *
  * Wrapped in React.cache() so one render pass = one DB hit, even with multiple callers.
+ * Pass the same Prisma instance on every call for cache hits — different instances
+ * are distinct cache keys and disable deduplication.
  */
 export const loadTheme = cache(
   async (prisma: BrandThemePrismaClient, slug: string): Promise<Tokens> => {
