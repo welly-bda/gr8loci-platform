@@ -51,3 +51,13 @@ model AdminUser {
 
   @@map("admin_users")
 }
+
+model BrandTheme {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  tokens    Json
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@map("brand_themes")
+}
