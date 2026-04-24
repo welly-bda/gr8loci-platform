@@ -1,4 +1,6 @@
-export const tokens = {
+import type { TokensInput } from './schema'
+
+export const defaultTokens = {
   color: {
     brand: {
       primary: '#163759',
@@ -6,17 +8,17 @@ export const tokens = {
       accent: '#20b2aa',
     },
     neutral: {
-      50: '#f8fafc',
-      100: '#f1f5f9',
-      200: '#e2e8f0',
-      300: '#cbd5e1',
-      400: '#94a3b8',
-      500: '#64748b',
-      600: '#475569',
-      700: '#334155',
-      800: '#1e293b',
-      900: '#0f172a',
-      950: '#020617',
+      '50': '#f8fafc',
+      '100': '#f1f5f9',
+      '200': '#e2e8f0',
+      '300': '#cbd5e1',
+      '400': '#94a3b8',
+      '500': '#64748b',
+      '600': '#475569',
+      '700': '#334155',
+      '800': '#1e293b',
+      '900': '#0f172a',
+      '950': '#020617',
     },
     semantic: {
       success: '#16a34a',
@@ -70,18 +72,18 @@ export const tokens = {
     },
   },
   spacing: {
-    0: '0',
-    1: '0.25rem',
-    2: '0.5rem',
-    3: '0.75rem',
-    4: '1rem',
-    6: '1.5rem',
-    8: '2rem',
-    12: '3rem',
-    16: '4rem',
-    20: '5rem',
-    24: '6rem',
-    32: '8rem',
+    '0': '0',
+    '1': '0.25rem',
+    '2': '0.5rem',
+    '3': '0.75rem',
+    '4': '1rem',
+    '6': '1.5rem',
+    '8': '2rem',
+    '12': '3rem',
+    '16': '4rem',
+    '20': '5rem',
+    '24': '6rem',
+    '32': '8rem',
   },
   radius: {
     none: '0',
@@ -97,13 +99,21 @@ export const tokens = {
     lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
     xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
   },
-  breakpoint: {
-    sm: 640,
-    md: 768,
-    lg: 1024,
-    xl: 1280,
-    '2xl': 1536,
-  },
+} as const satisfies TokensInput
+
+export const breakpoints = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  '2xl': 1536,
 } as const
 
-export type Tokens = typeof tokens
+export type Tokens = typeof defaultTokens
+export type Breakpoints = typeof breakpoints
+
+/**
+ * @deprecated Use `defaultTokens` instead. `tokens` is re-exported for one release
+ * to ease migration from F1; will be removed when F3 lands.
+ */
+export const tokens = defaultTokens
