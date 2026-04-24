@@ -181,9 +181,13 @@ Subsequent migrations run automatically via the Vercel build hook (`prisma migra
 
 ## Project documentation
 
-The design spec and implementation plan for the F1 monorepo foundation (this repo's initial scope) live in the source repo of the prior GR8LOCI site at:
-- `docs/superpowers/specs/2026-04-22-f1-monorepo-foundation-design.md`
-- `docs/superpowers/plans/2026-04-22-f1-monorepo-foundation.md`
+- [`docs/`](./docs/) — top-level docs index (architecture, decisions, runbooks)
+- [`docs/superpowers/specs/2026-04-22-f1-monorepo-foundation-design.md`](./docs/superpowers/specs/2026-04-22-f1-monorepo-foundation-design.md) — F1 design spec
+- [`docs/superpowers/plans/2026-04-22-f1-monorepo-foundation.md`](./docs/superpowers/plans/2026-04-22-f1-monorepo-foundation.md) — F1 implementation plan
+- [`docs/superpowers/handoff/README.md`](./docs/superpowers/handoff/README.md) — current status / what's next
+- [`CLAUDE.md`](./CLAUDE.md) — project context for Claude Code sessions
+
+The Obsidian vault mirror lives at `~/Documents/vault-dw2-notes-remote/04-Projects/gr8loci_newBuild/`.
 
 ## License
 
