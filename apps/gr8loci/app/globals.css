@@ -1,5 +1,3 @@
-@import '@platform/design-system/tokens.css';
-
 *, *::before, *::after {
   box-sizing: border-box;
 }
