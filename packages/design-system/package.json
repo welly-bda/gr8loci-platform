@@ -7,17 +7,15 @@
     ".": "./src/index.ts",
     "./server": "./src/server.ts",
     "./runtime": "./src/runtime/index.ts",
-    "./tokens": "./src/tokens/index.ts",
-    "./tokens.css": "./tokens.css"
+    "./tokens": "./src/tokens/index.ts"
   },
   "scripts": {
-    "build": "pnpm run generate:tokens && tsc",
+    "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "generate:tokens": "tsx scripts/generate-tokens.ts",
-    "clean": "rm -rf dist tokens.css"
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "clsx": "^2.1.1",
