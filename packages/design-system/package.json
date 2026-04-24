@@ -7,6 +7,7 @@
     ".": "./src/index.ts",
     "./server": "./src/server.ts",
     "./runtime": "./src/runtime/index.ts",
+    "./tokens": "./src/tokens/index.ts",
     "./tokens.css": "./tokens.css"
   },
   "scripts": {

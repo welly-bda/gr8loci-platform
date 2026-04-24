@@ -1,4 +1,5 @@
 import { PrismaClient, PostStatus } from '@prisma/client'
+import { defaultTokens } from '@platform/design-system/tokens'
 
 const prisma = new PrismaClient()
 
@@ -18,6 +19,12 @@ async function main() {
     where: { email: adminEmail },
     create: { email: adminEmail },
     update: {},
+  })
+
+  await prisma.brandTheme.upsert({
+    where: { slug: 'gr8loci' },
+    create: { slug: 'gr8loci', tokens: defaultTokens },
+    update: {}, // do not clobber edits made via Prisma Studio
   })
 
   const posts = [
