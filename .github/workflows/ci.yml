@@ -11,6 +11,36 @@ jobs:
     name: Lint, Typecheck, Build, Test
     runs-on: ubuntu-latest
     timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: gr8loci_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      # Build statically prerenders pages that query Postgres, and the F2 theme
+      # integration test runs against a real DB. Point both at the service above.
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gr8loci_test
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/gr8loci_test
+      # F1 auth stub — required at module load by @platform/auth (non-secret CI values).
+      AUTH_STUB_SECRET: ci-stub-secret-not-used-for-anything-real
+      ADMIN_STUB_EMAIL: ci@example.com
+      ADMIN_STUB_PASSWORD: ci-not-a-real-password
+      # F2 theme loader + public site identity.
+      BRAND_SLUG: gr8loci
+      NEXT_PUBLIC_SITE_NAME: GR8LOCI
+      NEXT_PUBLIC_SITE_URL: http://localhost:3005
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,6 +59,9 @@ jobs:
 
       - name: Generate Prisma client
         run: pnpm --filter gr8loci prisma:generate
+
+      - name: Run database migrations
+        run: pnpm --filter gr8loci exec prisma migrate deploy
 
       - name: Lint
         run: pnpm lint
