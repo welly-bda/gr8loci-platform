@@ -1,10 +1,18 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
+  "globalPassThroughEnv": [
+    "DATABASE_URL",
+    "DIRECT_URL",
+    "AUTH_STUB_SECRET",
+    "ADMIN_STUB_EMAIL",
+    "ADMIN_STUB_PASSWORD"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "env": ["NEXT_PUBLIC_SITE_NAME", "NEXT_PUBLIC_SITE_URL", "BRAND_SLUG"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "dev": {
