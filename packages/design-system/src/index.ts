@@ -1,5 +1,7 @@
-export { tokens } from './tokens'
-export type { Tokens } from './tokens'
+export { defaultTokens, breakpoints, tokens } from './tokens'
+export type { Tokens, Breakpoints } from './tokens'
+export { TokensSchema } from './tokens/schema'
+export type { TokensInput } from './tokens/schema'
 
 export { Button } from './components/Button'
 export type { ButtonProps, ButtonVariant, ButtonSize } from './components/Button'
