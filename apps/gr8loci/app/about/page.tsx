@@ -2,15 +2,16 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Container, RichContent, Stack } from '@platform/design-system'
 import { getPageBySlug } from '@/lib/content'
+import { getTenantDb } from '@/lib/tenant-context'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await getPageBySlug('about')
+  const page = await getPageBySlug(await getTenantDb(), 'about')
   if (!page) return {}
   return { title: page.title }
 }
 
 export default async function AboutPage() {
-  const page = await getPageBySlug('about')
+  const page = await getPageBySlug(await getTenantDb(), 'about')
   if (!page) notFound()
 
   return (

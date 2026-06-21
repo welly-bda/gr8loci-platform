@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Container, Heading, Stack, Text } from '@platform/design-system'
 import { BlogGrid } from '@/components/BlogGrid'
 import { getPublishedBlogPosts } from '@/lib/content'
+import { getTenantDb } from '@/lib/tenant-context'
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogIndexPage() {
-  const posts = await getPublishedBlogPosts()
+  const db = await getTenantDb()
+  const posts = await getPublishedBlogPosts(db)
   return (
     <main>
       <Container>

@@ -18,7 +18,6 @@ export default [
       'lib/tenant-context.ts',
       'lib/active-blog.ts',
       'lib/auth-actions.ts',
-      'lib/content.ts', // TEMPORARY — remove in Task 8 once content.ts imports only the ScopedPrisma type
       'app/(admin)/**',
       'app/layout.tsx',
     ],

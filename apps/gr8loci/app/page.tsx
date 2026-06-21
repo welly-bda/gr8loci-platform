@@ -2,9 +2,11 @@ import { Container, Heading, Stack } from '@platform/design-system'
 import { HeroSection } from '@/components/HeroSection'
 import { BlogGrid } from '@/components/BlogGrid'
 import { getPublishedBlogPosts } from '@/lib/content'
+import { getTenantDb } from '@/lib/tenant-context'
 
 export default async function HomePage() {
-  const posts = (await getPublishedBlogPosts()).slice(0, 3)
+  const db = await getTenantDb()
+  const posts = (await getPublishedBlogPosts(db)).slice(0, 3)
 
   return (
     <main>

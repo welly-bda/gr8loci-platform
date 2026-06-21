@@ -1,5 +1,5 @@
 import type { RichContentSchema as RichContent } from '@platform/design-system'
-import { basePrisma as prisma } from './db/base'
+import type { ScopedPrisma } from './db/tenant'
 
 export type BlogPostSummary = {
   id: string
@@ -22,8 +22,8 @@ export type PageEntity = {
   content: RichContent
 }
 
-export async function getPublishedBlogPosts(): Promise<BlogPostSummary[]> {
-  return prisma.blogPost.findMany({
+export async function getPublishedBlogPosts(db: ScopedPrisma): Promise<BlogPostSummary[]> {
+  return db.blogPost.findMany({
     where: { status: 'published' },
     orderBy: { publishedAt: 'desc' },
     select: {
@@ -38,10 +38,8 @@ export async function getPublishedBlogPosts(): Promise<BlogPostSummary[]> {
   })
 }
 
-export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
-  const row = await prisma.blogPost.findFirst({
-    where: { slug, status: 'published' },
-  })
+export async function getBlogPostBySlug(db: ScopedPrisma, slug: string): Promise<BlogPost | null> {
+  const row = await db.blogPost.findFirst({ where: { slug, status: 'published' } })
   if (!row) return null
   return {
     id: row.id,
@@ -55,8 +53,8 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
   }
 }
 
-export async function getPageBySlug(slug: string): Promise<PageEntity | null> {
-  const row = await prisma.page.findFirst({ where: { slug } })
+export async function getPageBySlug(db: ScopedPrisma, slug: string): Promise<PageEntity | null> {
+  const row = await db.page.findFirst({ where: { slug } })
   if (!row) return null
   return {
     id: row.id,

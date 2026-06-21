@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Container, Heading, RichContent, Stack, Text } from '@platform/design-system'
 import { getBlogPostBySlug } from '@/lib/content'
+import { getTenantDb } from '@/lib/tenant-context'
 
 interface Params {
   params: Promise<{ slug: string }>
@@ -9,7 +10,8 @@ interface Params {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params
-  const post = await getBlogPostBySlug(slug)
+  const db = await getTenantDb()
+  const post = await getBlogPostBySlug(db, slug)
   if (!post) return {}
   return {
     title: post.title,
@@ -19,7 +21,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Params) {
   const { slug } = await params
-  const post = await getBlogPostBySlug(slug)
+  const db = await getTenantDb()
+  const post = await getBlogPostBySlug(db, slug)
   if (!post) notFound()
 
   return (
