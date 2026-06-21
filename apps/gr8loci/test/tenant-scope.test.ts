@@ -22,6 +22,8 @@ describe.skipIf(!dbAvailable)('forBlog tenant isolation', () => {
     // Same slug 'hello' in both tenants — proves per-tenant uniqueness + scoping.
     await basePrisma.page.create({ data: { blogId: aId, slug: 'hello', title: 'A hello', content: {} } })
     await basePrisma.page.create({ data: { blogId: bId, slug: 'hello', title: 'B hello', content: {} } })
+    // 'made' in tenant B — proves deleteMany on A cannot touch it.
+    await basePrisma.page.create({ data: { blogId: bId, slug: 'made', title: 'B made', content: {} } })
   })
 
   afterAll(async () => {
@@ -57,7 +59,9 @@ describe.skipIf(!dbAvailable)('forBlog tenant isolation', () => {
 
   it('deleteMany cannot touch another tenant rows', async () => {
     await forBlog(aId).page.deleteMany({ where: { slug: 'made' } })
-    const stillThereForB = await basePrisma.page.count({ where: { blogId: bId } })
-    expect(stillThereForB).toBeGreaterThan(0)
+    // Tenant B's 'made' page must still exist — proves deleteMany was scoped to A.
+    const bMade = await basePrisma.page.findFirst({ where: { blogId: bId, slug: 'made' } })
+    expect(bMade).not.toBeNull()
+    expect(bMade?.title).toBe('B made')
   })
 })
