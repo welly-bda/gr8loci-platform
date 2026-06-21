@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { auth, initAuthForRequest } from '@platform/auth'
-import { prisma } from './db'
+import { basePrisma as prisma } from './db/base'
 
 export async function loginAction(_prev: { error?: string }, formData: FormData): Promise<{ error?: string }> {
   const email = String(formData.get('email') ?? '').trim()

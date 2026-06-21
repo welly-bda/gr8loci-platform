@@ -1,5 +1,5 @@
 import type { RichContentSchema as RichContent } from '@platform/design-system'
-import { prisma } from './db'
+import { basePrisma as prisma } from './db/base'
 
 export type BlogPostSummary = {
   id: string

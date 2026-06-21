@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { ThemeStyle } from '@platform/design-system/runtime'
-import { prisma } from '@/lib/db'
+import { basePrisma as prisma } from '@/lib/db/base'
 import { SiteHeader } from '@/components/SiteHeader'
 import { SiteFooter } from '@/components/SiteFooter'
 import './globals.css'
