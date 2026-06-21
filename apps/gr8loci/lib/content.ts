@@ -56,7 +56,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 }
 
 export async function getPageBySlug(slug: string): Promise<PageEntity | null> {
-  const row = await prisma.page.findUnique({ where: { slug } })
+  const row = await prisma.page.findFirst({ where: { slug } })
   if (!row) return null
   return {
     id: row.id,

@@ -25,9 +25,10 @@ describe.skipIf(!dbAvailable)('theme integration (requires DATABASE_URL)', () =>
   })
 
   it('loads the DB row and serializes modified values into the CSS output', async () => {
+    const blog = await prisma.blog.findFirstOrThrow({ where: { slug: 'gr8loci' } })
     const modified = structuredClone(defaultTokens) as typeof defaultTokens
     ;(modified.color.brand as { primary: string }).primary = '#ff0000'
-    await prisma.brandTheme.create({ data: { slug: TEST_SLUG, tokens: modified } })
+    await prisma.brandTheme.create({ data: { blogId: blog.id, slug: TEST_SLUG, tokens: modified } })
 
     const tokens = await loadTheme(prisma, TEST_SLUG)
     expect(tokens.color.brand.primary).toBe('#ff0000')

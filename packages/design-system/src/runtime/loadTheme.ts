@@ -9,7 +9,7 @@ import type { Tokens } from '../tokens'
  */
 export interface BrandThemePrismaClient {
   brandTheme: {
-    findUnique(args: { where: { slug: string } }): Promise<{ tokens: unknown } | null>
+    findFirst(args: { where: { slug: string } }): Promise<{ tokens: unknown } | null>
   }
 }
 
@@ -29,7 +29,7 @@ export const loadTheme = cache(
   async (prisma: BrandThemePrismaClient, slug: string): Promise<Tokens> => {
     let row: { tokens: unknown } | null
     try {
-      row = await prisma.brandTheme.findUnique({ where: { slug } })
+      row = await prisma.brandTheme.findFirst({ where: { slug } })
     } catch (err) {
       console.error(`[theme] DB unreachable for slug=${slug}; falling back to defaults`, err)
       return defaultTokens
