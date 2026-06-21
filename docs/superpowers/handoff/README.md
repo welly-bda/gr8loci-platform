@@ -71,6 +71,7 @@ Current state: F1 ships CSS custom properties generated at build time from `pack
 - Auth stub still in use — single super-admin across all tenants, no rate limiting. **Do not expose to public production without Clerk (P1.5).**
 - `heroImageUrl` remains a plain string; a `Media` table is a future milestone.
 - Visual regression testing not yet in place.
+- **Theme resolves by slug, not blogId** (loadTheme). Safe in P1 (only tenant-0 has a theme); resolve by blogId when P2 adds per-tenant themes, to prevent cross-tenant theme bleed.
 
 ---
 
