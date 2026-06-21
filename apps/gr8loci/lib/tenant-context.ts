@@ -3,9 +3,13 @@ import { cache } from 'react'
 import { forBlog, type ScopedPrisma } from './db/tenant'
 import { forPlatform } from './db/platform'
 
+export class MissingTenantError extends Error {
+  constructor() { super('x-blog-id header missing — no tenant resolved for this request') }
+}
+
 export async function getBlogId(): Promise<string> {
   const blogId = (await headers()).get('x-blog-id')
-  if (!blogId) throw new Error('getBlogId(): x-blog-id header missing — middleware did not resolve a tenant')
+  if (!blogId) throw new MissingTenantError()
   return blogId
 }
 

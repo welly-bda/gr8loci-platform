@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { ThemeStyle } from '@platform/design-system/runtime'
 import { forPlatform } from '@/lib/db/platform'
-import { getCurrentBlog } from '@/lib/tenant-context'
+import { getCurrentBlog, MissingTenantError } from '@/lib/tenant-context'
 import { SiteHeader } from '@/components/SiteHeader'
 import { SiteFooter } from '@/components/SiteFooter'
 import './globals.css'
@@ -12,19 +12,19 @@ export const metadata: Metadata = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // Admin routes don't carry x-blog-id — fall back to the env default so the
-  // layout still renders; public routes always have the header (set by middleware).
-  let slug: string
+  // Admin routes don't carry x-blog-id; catch only that case and render without
+  // tenant theme. Re-throw any other error so real failures surface loudly.
+  let themeSlug: string | null = null
   try {
-    const blog = await getCurrentBlog()
-    slug = blog.slug
-  } catch {
-    slug = process.env.BRAND_SLUG ?? 'gr8loci'
+    themeSlug = (await getCurrentBlog()).slug
+  } catch (e) {
+    if (!(e instanceof MissingTenantError)) throw e
+    // admin / no-tenant context: render without tenant theme
   }
   return (
     <html lang="en">
       <head>
-        <ThemeStyle prisma={forPlatform()} slug={slug} />
+        {themeSlug && <ThemeStyle prisma={forPlatform()} slug={themeSlug} />}
       </head>
       <body>
         <SiteHeader />
