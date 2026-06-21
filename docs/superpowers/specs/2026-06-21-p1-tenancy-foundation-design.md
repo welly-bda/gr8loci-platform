@@ -214,11 +214,11 @@ The enforced realization of "**no unscoped Prisma in application code**."
 
 ### 4.3 Platform / super-admin escape hatch
 
-- A separate, explicitly named export — `forPlatform()` (or `unsafeUnscopedPrisma`) —
-  returns the unscoped client for genuine cross-tenant operations: create/list blogs,
-  resolve hostnames, super-admin tooling.
-- The name is deliberately conspicuous for review; the lint allowlist permits it only
-  in the platform/admin module.
+- A separate, explicitly named export — **`forPlatform()`** — returns the unscoped
+  client for genuine cross-tenant operations: create/list blogs, resolve hostnames,
+  super-admin tooling. Symmetric with `forBlog()` so call sites read clearly.
+- Usage is deliberately conspicuous for review; the lint allowlist permits the raw
+  client only inside `forBlog`/`forPlatform` and the platform/admin module.
 
 ### 4.4 Isolation leak-guard test (central contract)
 
