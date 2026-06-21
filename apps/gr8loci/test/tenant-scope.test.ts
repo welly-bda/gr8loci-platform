@@ -64,4 +64,38 @@ describe.skipIf(!dbAvailable)('forBlog tenant isolation', () => {
     expect(bMade).not.toBeNull()
     expect(bMade?.title).toBe('B made')
   })
+
+  it('throws on findUnique for a tenant model (not scopable)', async () => {
+    await expect(
+      forBlog(aId).page.findUnique({ where: { id: 'whatever' } }),
+    ).rejects.toThrow(/not tenant-scoped/)
+  })
+
+  it('throws on findUniqueOrThrow for a tenant model', async () => {
+    await expect(
+      forBlog(aId).page.findUniqueOrThrow({ where: { id: 'whatever' } }),
+    ).rejects.toThrow(/not tenant-scoped/)
+  })
+
+  it('throws on upsert for a tenant model', async () => {
+    await expect(
+      forBlog(aId).page.upsert({
+        where: { id: 'x' },
+        create: { slug: 's', title: 't', content: {} } as never,
+        update: {},
+      }),
+    ).rejects.toThrow(/not tenant-scoped/)
+  })
+
+  it('throws on update (singular) for a tenant model', async () => {
+    await expect(
+      forBlog(aId).page.update({ where: { id: 'whatever' }, data: { title: 'new' } }),
+    ).rejects.toThrow(/not tenant-scoped/)
+  })
+
+  it('throws on delete (singular) for a tenant model', async () => {
+    await expect(
+      forBlog(aId).page.delete({ where: { id: 'whatever' } }),
+    ).rejects.toThrow(/not tenant-scoped/)
+  })
 })
