@@ -2,14 +2,17 @@ import { Container, Heading, Stack } from '@platform/design-system'
 import { HeroSection } from '@/components/HeroSection'
 import { BlogGrid } from '@/components/BlogGrid'
 import { getPublishedBlogPosts } from '@/lib/content'
-import { getTenantDb } from '@/lib/tenant-context'
+import { getCurrentBlog, getTenantDb } from '@/lib/tenant-context'
+import { LayoutRenderer } from '@/app/_layouts/LayoutRenderer'
+import { resolveLayoutKey } from '@/app/_layouts/registry'
 
 export default async function HomePage() {
-  const db = await getTenantDb()
+  const [db, blog] = await Promise.all([getTenantDb(), getCurrentBlog()])
   const posts = (await getPublishedBlogPosts(db)).slice(0, 3)
+  const layoutKey = resolveLayoutKey(blog.defaultLayout)
 
   return (
-    <main>
+    <LayoutRenderer layoutKey={layoutKey}>
       <HeroSection
         title="Clear answers on health and wellness."
         tagline="Evidence-based habits, honest reviews, practical guides."
@@ -23,6 +26,6 @@ export default async function HomePage() {
           <BlogGrid posts={posts} />
         </Stack>
       </Container>
-    </main>
+    </LayoutRenderer>
   )
 }

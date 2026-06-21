@@ -2,7 +2,9 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Container, Heading, RichContent, Stack, Text } from '@platform/design-system'
 import { getBlogPostBySlug } from '@/lib/content'
-import { getTenantDb } from '@/lib/tenant-context'
+import { getCurrentBlog, getTenantDb } from '@/lib/tenant-context'
+import { LayoutRenderer } from '@/app/_layouts/LayoutRenderer'
+import { resolveLayoutKey } from '@/app/_layouts/registry'
 
 interface Params {
   params: Promise<{ slug: string }>
@@ -21,12 +23,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Params) {
   const { slug } = await params
-  const db = await getTenantDb()
+  const [db, blog] = await Promise.all([getTenantDb(), getCurrentBlog()])
   const post = await getBlogPostBySlug(db, slug)
   if (!post) notFound()
+  const layoutKey = resolveLayoutKey(blog.defaultLayout)
 
   return (
-    <main>
+    <LayoutRenderer layoutKey={layoutKey}>
       <Container maxWidth="md">
         <Stack gap={8} style={{ paddingBlock: 'var(--space-16)' }}>
           <Stack gap={3}>
@@ -44,6 +47,6 @@ export default async function BlogPostPage({ params }: Params) {
           <RichContent doc={post.content} />
         </Stack>
       </Container>
-    </main>
+    </LayoutRenderer>
   )
 }

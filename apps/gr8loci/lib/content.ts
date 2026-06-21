@@ -20,6 +20,7 @@ export type PageEntity = {
   slug: string
   title: string
   content: RichContent
+  layoutKey: string | null
 }
 
 export async function getPublishedBlogPosts(db: ScopedPrisma): Promise<BlogPostSummary[]> {
@@ -61,5 +62,6 @@ export async function getPageBySlug(db: ScopedPrisma, slug: string): Promise<Pag
     slug: row.slug,
     title: row.title,
     content: row.content as unknown as RichContent,
+    layoutKey: row.layoutKey ?? null,
   }
 }
