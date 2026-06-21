@@ -23,8 +23,11 @@ async function resolveBlogId(req: NextRequest): Promise<string | null> {
   const { hostname, subdomainSlug } = parseHost(req.headers.get('host'))
   const db = forPlatform()
   // Exact Domain match first (apex, www, custom, dev hosts).
-  const domain = await db.domain.findUnique({ where: { hostname }, select: { blogId: true } })
-  if (domain) return domain.blogId
+  const domain = await db.domain.findUnique({
+    where: { hostname },
+    select: { blogId: true, blog: { select: { status: true } } },
+  })
+  if (domain && domain.blog.status === 'active') return domain.blogId
   // Then subdomain slug.
   if (subdomainSlug) {
     const blog = await db.blog.findFirst({
