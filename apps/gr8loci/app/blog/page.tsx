@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import { Container, Heading, Stack, Text } from '@platform/design-system'
 import { BlogGrid } from '@/components/BlogGrid'
 import { getPublishedBlogPosts } from '@/lib/content'
+import { getCurrentBlog, getTenantDb } from '@/lib/tenant-context'
+import { LayoutRenderer } from '@/app/_layouts/LayoutRenderer'
+import { resolveLayoutKey } from '@/app/_layouts/registry'
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -9,9 +12,11 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogIndexPage() {
-  const posts = await getPublishedBlogPosts()
+  const [db, blog] = await Promise.all([getTenantDb(), getCurrentBlog()])
+  const posts = await getPublishedBlogPosts(db)
+  const layoutKey = resolveLayoutKey(blog.defaultLayout)
   return (
-    <main>
+    <LayoutRenderer layoutKey={layoutKey}>
       <Container>
         <Stack gap={8} style={{ paddingBlock: 'var(--space-16)' }}>
           <Stack gap={3}>
@@ -21,6 +26,6 @@ export default async function BlogIndexPage() {
           <BlogGrid posts={posts} />
         </Stack>
       </Container>
-    </main>
+    </LayoutRenderer>
   )
 }

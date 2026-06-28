@@ -7,7 +7,7 @@ const SLUG = 'gr8loci'
 test.describe('F2 theme engine — runtime edits reflect on reload', () => {
   test.beforeAll(async () => {
     // Ensure the gr8loci row exists with defaults before we mutate.
-    const existing = await prisma.brandTheme.findUnique({ where: { slug: SLUG } })
+    const existing = await prisma.brandTheme.findFirst({ where: { slug: SLUG } })
     if (!existing) {
       throw new Error(
         `No BrandTheme row for slug=${SLUG}. Run prisma:seed before test:e2e.`,
@@ -21,7 +21,10 @@ test.describe('F2 theme engine — runtime edits reflect on reload', () => {
 
   test('changing color.brand.primary in DB updates --color-brand-primary after reload', async ({ page }) => {
     // Snapshot original tokens so we can restore at end.
-    const original = await prisma.brandTheme.findUniqueOrThrow({ where: { slug: SLUG } })
+    const blog = await prisma.blog.findFirstOrThrow({ where: { slug: SLUG } })
+    const original = await prisma.brandTheme.findUniqueOrThrow({
+      where: { blogId_slug: { blogId: blog.id, slug: SLUG } },
+    })
 
     try {
       await page.goto('/')
@@ -34,7 +37,7 @@ test.describe('F2 theme engine — runtime edits reflect on reload', () => {
       const tokens = structuredClone(original.tokens) as { color: { brand: { primary: string } } }
       tokens.color.brand.primary = '#ff0000'
       await prisma.brandTheme.update({
-        where: { slug: SLUG },
+        where: { blogId_slug: { blogId: blog.id, slug: SLUG } },
         data: { tokens: tokens as unknown as object },
       })
 
@@ -46,7 +49,7 @@ test.describe('F2 theme engine — runtime edits reflect on reload', () => {
     } finally {
       // Always restore, even on assertion failure.
       await prisma.brandTheme.update({
-        where: { slug: SLUG },
+        where: { blogId_slug: { blogId: blog.id, slug: SLUG } },
         data: { tokens: original.tokens as object },
       })
     }

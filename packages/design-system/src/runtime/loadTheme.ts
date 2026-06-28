@@ -9,7 +9,7 @@ import type { Tokens } from '../tokens'
  */
 export interface BrandThemePrismaClient {
   brandTheme: {
-    findUnique(args: { where: { slug: string } }): Promise<{ tokens: unknown } | null>
+    findFirst(args: { where: { slug: string }; orderBy?: { createdAt: 'asc' | 'desc' } }): Promise<{ tokens: unknown } | null>
   }
 }
 
@@ -29,7 +29,10 @@ export const loadTheme = cache(
   async (prisma: BrandThemePrismaClient, slug: string): Promise<Tokens> => {
     let row: { tokens: unknown } | null
     try {
-      row = await prisma.brandTheme.findUnique({ where: { slug } })
+      // P1 resolves the theme by slug (spec §2.1). BrandTheme.slug is NOT DB-unique (only blogId_slug is),
+      // so once P2 adds per-tenant themes this must resolve by blogId to avoid cross-tenant theme bleed.
+      // orderBy keeps the P1 lookup deterministic until then. See handoff "Open items".
+      row = await prisma.brandTheme.findFirst({ where: { slug }, orderBy: { createdAt: 'asc' } })
     } catch (err) {
       console.error(`[theme] DB unreachable for slug=${slug}; falling back to defaults`, err)
       return defaultTokens

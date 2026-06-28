@@ -14,9 +14,20 @@ enum PostStatus {
   archived
 }
 
+enum BlogStatus {
+  active
+  disabled
+}
+
+enum Role {
+  super_admin
+  operator_admin
+  editor
+}
+
 model BlogPost {
   id             String     @id @default(cuid())
-  slug           String     @unique
+  slug           String
   title          String
   excerpt        String?
   content        Json
@@ -27,20 +38,29 @@ model BlogPost {
   publishedAt    DateTime?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+  blogId         String
 
-  @@index([status, publishedAt])
+  blog Blog @relation(fields: [blogId], references: [id])
+
+  @@unique([blogId, slug])
+  @@index([blogId, status, publishedAt])
   @@map("blog_posts")
 }
 
 model Page {
   id             String   @id @default(cuid())
-  slug           String   @unique
+  slug           String
   title          String
   content        Json
   contentVersion Int      @default(1)
+  layoutKey      String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  blogId         String
 
+  blog Blog @relation(fields: [blogId], references: [id])
+
+  @@unique([blogId, slug])
   @@map("pages")
 }
 
@@ -54,10 +74,60 @@ model AdminUser {
 
 model BrandTheme {
   id        String   @id @default(cuid())
-  slug      String   @unique
+  slug      String
   tokens    Json
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
+  blogId    String
 
+  blog Blog @relation(fields: [blogId], references: [id])
+
+  @@unique([blogId, slug])
   @@map("brand_themes")
+}
+
+model Blog {
+  id            String     @id @default(cuid())
+  slug          String     @unique
+  name          String
+  status        BlogStatus @default(active)
+  defaultLayout String     @default("default")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  posts       BlogPost[]
+  pages       Page[]
+  themes      BrandTheme[]
+  memberships Membership[]
+  domains     Domain[]
+
+  @@map("blogs")
+}
+
+model Membership {
+  id        String   @id @default(cuid())
+  userId    String
+  blogId    String
+  role      Role     @default(editor)
+  createdAt DateTime @default(now())
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId])
+  @@index([blogId])
+  @@map("memberships")
+}
+
+model Domain {
+  id         String    @id @default(cuid())
+  hostname   String    @unique
+  blogId     String
+  isPrimary  Boolean   @default(false)
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([blogId])
+  @@map("domains")
 }

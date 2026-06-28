@@ -1,4 +1,4 @@
-import { PrismaClient, PostStatus } from '@prisma/client'
+import { PrismaClient, PostStatus, Role } from '@prisma/client'
 import { defaultTokens } from '@platform/design-system/tokens'
 
 const prisma = new PrismaClient()
@@ -15,16 +15,35 @@ async function main() {
   const adminEmail = process.env.ADMIN_STUB_EMAIL
   if (!adminEmail) throw new Error('ADMIN_STUB_EMAIL required for seeding')
 
-  await prisma.adminUser.upsert({
+  const blog = await prisma.blog.upsert({
+    where: { slug: 'gr8loci' },
+    update: {},
+    create: { slug: 'gr8loci', name: 'GR8LOCI', defaultLayout: 'default' },
+  })
+
+  for (const hostname of ['gr8loci.online', 'www.gr8loci.online', 'localhost', 'gr8loci.localhost']) {
+    await prisma.domain.upsert({
+      where: { hostname },
+      update: {},
+      create: { hostname, blogId: blog.id, isPrimary: hostname === 'gr8loci.online', verifiedAt: new Date() },
+    })
+  }
+
+  const admin = await prisma.adminUser.upsert({
     where: { email: adminEmail },
     create: { email: adminEmail },
     update: {},
   })
+  await prisma.membership.upsert({
+    where: { userId_blogId: { userId: admin.id, blogId: blog.id } },
+    update: {},
+    create: { userId: admin.id, blogId: blog.id, role: Role.super_admin },
+  })
 
   await prisma.brandTheme.upsert({
-    where: { slug: 'gr8loci' },
-    create: { slug: 'gr8loci', tokens: defaultTokens },
-    update: {}, // do not clobber edits made via Prisma Studio
+    where: { blogId_slug: { blogId: blog.id, slug: 'gr8loci' } },
+    update: {},
+    create: { blogId: blog.id, slug: 'gr8loci', tokens: defaultTokens },
   })
 
   const posts = [
@@ -53,9 +72,10 @@ async function main() {
 
   for (const p of posts) {
     await prisma.blogPost.upsert({
-      where: { slug: p.slug },
+      where: { blogId_slug: { blogId: blog.id, slug: p.slug } },
       update: {},
       create: {
+        blogId: blog.id,
         slug: p.slug,
         title: p.title,
         excerpt: p.excerpt,
@@ -79,9 +99,10 @@ async function main() {
   }
 
   await prisma.page.upsert({
-    where: { slug: 'about' },
+    where: { blogId_slug: { blogId: blog.id, slug: 'about' } },
     update: {},
     create: {
+      blogId: blog.id,
       slug: 'about',
       title: 'About GR8LOCI',
       content: {

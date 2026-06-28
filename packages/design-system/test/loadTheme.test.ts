@@ -4,13 +4,13 @@ import { defaultTokens } from '../src/tokens'
 
 type BrandThemeRow = { slug: string; tokens: unknown } | null
 type PrismaLike = {
-  brandTheme: { findUnique: (args: { where: { slug: string } }) => Promise<BrandThemeRow> }
+  brandTheme: { findFirst: (args: { where: { slug: string } }) => Promise<BrandThemeRow> }
 }
 
 function mockPrisma(handler: (slug: string) => Promise<BrandThemeRow> | BrandThemeRow): PrismaLike {
   return {
     brandTheme: {
-      findUnique: vi.fn(async ({ where: { slug } }) => handler(slug)),
+      findFirst: vi.fn(async ({ where: { slug } }) => handler(slug)),
     },
   }
 }
@@ -53,7 +53,7 @@ describe('loadTheme', () => {
   it('falls back to defaults when Prisma throws', async () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const prisma: PrismaLike = {
-      brandTheme: { findUnique: vi.fn(async () => { throw new Error('connect ECONNREFUSED') }) },
+      brandTheme: { findFirst: vi.fn(async () => { throw new Error('connect ECONNREFUSED') }) },
     }
 
     const result = await loadTheme(prisma, 'gr8loci')

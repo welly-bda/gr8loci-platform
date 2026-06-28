@@ -45,6 +45,36 @@ Current state: F1 ships CSS custom properties generated at build time from `pack
 
 - Predecessor repo: `~/Developer/ClaudeDev-local/gr8loci-online/` — legacy Node/Express site. F1 spec/plan originated there and were copied here on 2026-04-23; originals remain in place as archive.
 
+## As of 2026-06-21
+
+### Shipped
+
+**F2 — runtime theme engine** is complete and merged into `main` (branch `f2-theme-engine`). `BrandTheme` Prisma model; `ThemeStyle` RSC injects CSS custom properties at runtime; build-time token generation removed.
+
+**P1 — multi-tenant foundation** delivered on branch `p1-tenancy-foundation`:
+
+- **Data model:** `Blog`, `Membership`, `Domain` models added; `blogId` FK on `BlogPost`, `Page`, `BrandTheme` (nullable → backfill → non-null migration). Per-tenant unique constraints. `layoutKey` field on `Blog` for layout-selection seam (one `default` layout in P1).
+- **Hostname → tenant resolution** in `middleware.ts` (Node.js runtime, `experimental.nodeMiddleware`): exact `Domain` DB match first; then `*.gr8loci.online` subdomain → blog slug; unknown host → 404. Apex `gr8loci.online` + `www` resolve to tenant-0 (the migrated gr8loci blog). Dev: `*.localhost:3005` (e.g. `gr8loci.localhost:3005`, `demo.localhost:3005`).
+- **`forBlog` / `forPlatform` data-access layer:** `getTenantDb()` / `getCurrentBlog()` for public routes; `getAdminDb()` for admin routes. `forPlatform()` is the cross-tenant escape hatch. ESLint guard + leak-guard test enforce no unscoped Prisma in app code.
+- **Admin shell:** `(admin)` route group with Tailwind CSS + shadcn/ui (scoped to admin only; public site stays on CSS Modules until P2). Blog management, domain management, and tenant-switcher pages.
+- **Tenant-0 migration:** existing gr8loci content backfilled to the `gr8loci` blog record.
+- **Layout-selection seam:** `Blog.layoutKey` + a single `default` layout; the layout library lands in P2.
+- **CI:** now requires a Postgres service + `prisma migrate deploy` before build (pages prerender against the DB).
+
+### What's next
+
+- **P1.5 — Clerk:** replace the auth stub with Clerk; per-tenant `Membership` role enforcement.
+- **P2 — content & block/page builder + public layout library:** full CMS primitives, block editor, and the layout-selection UI backed by `Blog.layoutKey`.
+
+### Open items / known debts (P1)
+
+- Auth stub still in use — single super-admin across all tenants, no rate limiting. **Do not expose to public production without Clerk (P1.5).**
+- `heroImageUrl` remains a plain string; a `Media` table is a future milestone.
+- Visual regression testing not yet in place.
+- **Theme resolves by slug, not blogId** (loadTheme). Safe in P1 (only tenant-0 has a theme); resolve by blogId when P2 adds per-tenant themes, to prevent cross-tenant theme bleed.
+
+---
+
 ## Template for future entries
 
 ```
